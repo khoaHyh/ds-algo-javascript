@@ -103,13 +103,6 @@ class LinkedList {
 
     return nodes;
   }
-
-  // convert linked list to a string by converting to array and converting each node to a string
-  toString(callback) {
-    return this.toArray()
-      .map((node) => node.toString(callback))
-      .toString();
-  }
 }
 
 class HashTable {
@@ -218,16 +211,6 @@ class HashTable {
 
   /** DEBUG **/
   viewNodes() {
-    //const array = [];
-    //const listOfKeys = this.getKeys();
-    //for (let i = 0; i < listOfKeys.length; i++) {
-    //  const node = this.get(listOfKeys[i]);
-    //  if (node) {
-    //    array.push([node.key, node.value]);
-    //  }
-    //}
-    //return array;
-
     return this.buckets.reduce((values, bucket) => {
       const bucketValues = bucket.toArray();
       return values.concat(bucketValues);
