@@ -38,6 +38,24 @@ class SimpleLinkedList {
     return this;
   }
 
+  find({ value = undefined, callback = undefined }) {
+    if (!this.head) return null;
+
+    let currNode = this.head;
+
+    while (currNode) {
+      // if callback is specified then try to find node by callback
+      if (callback && callback(currNode.value)) return currNode;
+
+      // if value is specified then try to compare by value
+      if (value && currNode.value === value) return currNode;
+
+      currNode = currNode.next;
+    }
+
+    return null;
+  }
+
   delete(data) {
     if (!this.head) return null;
 
@@ -80,16 +98,19 @@ class SimpleLinkedList {
 
     let currNode = this.head;
     let nextNode = null;
-    let prevnode = null;
+    let prevNode = null;
 
     while (currNode) {
+      // save reference to next node and reverse the current "next" reference to the previous node
       nextNode = currNode.next;
       currNode.next = prevNode;
 
+      // move saved nodes forward
       prevNode = currNode;
       currNode = nextNode;
     }
 
+    // reset head and tail
     this.tail = this.head;
     this.head = prevNode;
 

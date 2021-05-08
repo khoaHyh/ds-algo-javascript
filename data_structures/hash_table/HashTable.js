@@ -42,27 +42,18 @@ class LinkedList {
     return this;
   }
 
-  find({ value = undefined, callback = undefined }) {
-    if (!this.head) {
-      return null;
-    }
+  find(key) {
+    if (!this.head) return null;
 
-    // tracer (used to traverse linked list)
-    let currentNode = this.head;
+    let currNode = this.head;
 
-    while (currentNode) {
-      // if callback is specified then try to find node by callback
-      if (callback && callback(currentNode.value)) {
-        return currentNode;
-      }
+    while (currNode) {
+      // access value property of linked list node with .value then
+      // access key property of node.value with .key
+      // compare to key in parameter
+      if (currNode.value.key === key) return currNode;
 
-      // if value is specified then try to compare by value
-      if (value !== undefined && currentNode.value === value) {
-        return currentNode;
-      }
-
-      // move tracer to next node
-      currentNode = currentNode.next;
+      currNode = currNode.next;
     }
 
     return null;
@@ -133,6 +124,7 @@ class HashTable {
   }
 
   hash(key) {
+    if (!key) return null;
     let hash = 0;
     // perform modular hashing
     for (let i = 0; i < key.length; i++) {
@@ -150,10 +142,10 @@ class HashTable {
 
     const hashedKey = this.hash(key);
     this.keys[key] = hashedKey;
+    // find the linked list at the specificed hashed index
     const bucketLinkedList = this.buckets[hashedKey];
-    const nodeExists = bucketLinkedList.find({
-      callback: (nodeValue) => nodeValue.key === key,
-    });
+    // search through the linked list for the node with matching key
+    const nodeExists = bucketLinkedList.find(key);
 
     if (nodeExists) {
       nodeExists.value.value = value;
@@ -165,19 +157,22 @@ class HashTable {
   }
 
   getNode(key) {
+    // find the linked list at the specificed hashed index
     const bucketLinkedList = this.buckets[this.hash(key)];
-    const node = bucketLinkedList.find({
-      callback: (nodeValue) => nodeValue.key === key,
-    });
+    // search through the linked list for the node with matching key
+    //const node = bucketLinkedList.find({
+    //  callback: (nodeValue) => nodeValue.key === key,
+    //});
+    const node = bucketLinkedList.find(key);
 
     return node ? node.value : undefined;
   }
 
   get(key) {
+    // find the linked list at the specificed hashed index
     const bucketLinkedList = this.buckets[this.hash(key)];
-    const node = bucketLinkedList.find({
-      callback: (nodeValue) => nodeValue.key === key,
-    });
+    // search through the linked list for the node with matching key
+    const node = bucketLinkedList.find(key);
 
     return node ? node.value.value : undefined;
   }
@@ -185,10 +180,10 @@ class HashTable {
   delete(key) {
     const hashedKey = this.hash(key);
     delete this.keys[key];
+    // find the linked list at the specificed hashed index
     const bucketLinkedList = this.buckets[hashedKey];
-    const nodeExists = bucketLinkedList.find({
-      callback: (nodeValue) => nodeValue.key === key,
-    });
+    // search through the linked list for the node with matching key
+    const nodeExists = bucketLinkedList.find(key);
 
     if (nodeExists) {
       return bucketLinkedList.delete(nodeExists.value);
@@ -202,21 +197,20 @@ class HashTable {
   }
 
   resize() {
-    let size = this.size * 2;
-    const newBuckets = new HashTable(size);
-    //const newBuckets = Array(size)
-    //  .fill(null)
-    //  .map(() => new LinkedList());
+    const size = this.size * 2;
+    const tempTable = new HashTable(size);
 
     const listOfKeys = this.getKeys();
+    // rehash all key-value pairs and set them in the temporary hash table
     for (let i = 0; i < listOfKeys.length; i++) {
-      const node = this.get(listOfKeys[i]);
+      const node = this.getNode(listOfKeys[i]);
+      // only set the key-value pair if the node exists
       if (node) {
-        newBuckets.set(node.key, node.value);
+        tempTable.set(node.key, node.value);
       }
     }
 
-    this.buckets = newBuckets.buckets;
+    this.buckets = tempTable.buckets;
     this.size = size;
 
     return this;
@@ -224,7 +218,7 @@ class HashTable {
 
   /** DEBUG **/
   viewNodes() {
-    const array = [];
+    //const array = [];
     //const listOfKeys = this.getKeys();
     //for (let i = 0; i < listOfKeys.length; i++) {
     //  const node = this.get(listOfKeys[i]);
@@ -246,10 +240,8 @@ MyHashTable.set("Jim", "1234");
 MyHashTable.set("Tim", "4321");
 MyHashTable.set("Slim", "9876");
 console.log(MyHashTable.size);
-console.log(MyHashTable.viewNodes());
 MyHashTable.delete("Slim");
-console.log(MyHashTable.viewNodes());
-console.log(MyHashTable.get("Jim"));
+console.log("get jim", MyHashTable.get("Jim"));
 MyHashTable.set("Bob", "32432");
 MyHashTable.set("Tom", "3858");
 MyHashTable.set("Sally", "1939");
@@ -258,3 +250,4 @@ MyHashTable.set("Jackie", "7323");
 MyHashTable.set("Lin", "23");
 console.log(MyHashTable.size);
 console.log(MyHashTable.viewNodes());
+console.log(MyHashTable.getNode("Sally"));
