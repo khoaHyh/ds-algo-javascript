@@ -38,17 +38,13 @@ class SimpleLinkedList {
     return this;
   }
 
-  find({ value = undefined, callback = undefined }) {
+  find(key) {
     if (!this.head) return null;
 
     let currNode = this.head;
 
     while (currNode) {
-      // if callback is specified then try to find node by callback
-      if (callback && callback(currNode.value)) return currNode;
-
-      // if value is specified then try to compare by value
-      if (value && currNode.value === value) return currNode;
+      if (currNode.value.key === key) return currNode;
 
       currNode = currNode.next;
     }
