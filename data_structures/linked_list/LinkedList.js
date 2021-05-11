@@ -1,5 +1,8 @@
 class Node {
-  constructor(value, next = null) {}
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
 class SimpleLinkedList {
