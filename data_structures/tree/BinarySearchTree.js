@@ -11,6 +11,10 @@ export default class BinarySearchTree {
     this.root = value ? new BinaryTreeNode(value) : null;
   }
 
+  stringifyNode(node) {
+    return JSON.stringify(node, null, 2);
+  }
+
   insert(value) {
     const newNode = new BinaryTreeNode(value);
 
@@ -41,13 +45,12 @@ export default class BinarySearchTree {
   }
 
   get(value) {
+    const notFoundMsg = `No nodes found with value '${value}'`;
     if (this.root == null) {
-      return null;
+      return notFoundMsg;
     }
 
-    return (
-      this.findNode(value, this.root) ?? `No nodes found with value '${value}'`
-    );
+    return this.findNode(value, this.root) ?? notFoundMsg;
   }
 
   findNode(value, currentNode) {
@@ -70,9 +73,30 @@ export default class BinarySearchTree {
     }
   }
 
-  stringifyNode(node) {
-    return JSON.stringify(node, null, 2);
+  traverse(order) {
+    if (this.root == null) {
+      return null;
+    }
+
+    switch (order.toLowerCase()) {
+      default:
+        return this.traverseAscOrder(this.root);
+    }
   }
 
-  traverseAscOrder() {}
+  traverseAscOrder(currentNode) {
+    const queue = [];
+
+    if (currentNode.left != null) {
+      queue.push(...this.traverseAscOrder(currentNode.left));
+    }
+
+    queue.push(currentNode.value);
+
+    if (currentNode.right != null) {
+      queue.push(...this.traverseAscOrder(currentNode.right));
+    }
+
+    return queue;
+  }
 }

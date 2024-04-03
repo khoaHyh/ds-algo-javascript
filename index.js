@@ -1,21 +1,28 @@
+import isEqual from "lodash/isEqual.js";
 import BinarySearchTree from "./data_structures/tree/BinarySearchTree.js";
 
-function run() {
-  const bst = new BinarySearchTree(5);
-  bst.insert(5);
-  bst.insert(2);
-  bst.insert(4);
-  bst.insert(7);
-  bst.insert(5);
-  bst.insert(6);
-  bst.insert(20);
-  bst.insert(2);
-  bst.insert(17);
-  console.log(bst.get(20));
+function customSort(array) {
+  return array.sort((a, b) => a - b);
+}
 
-  // console.log("starting traversal");
-  // bst.traverseAscOrder();
-  // console.log("end traversal");
+function run() {
+  const bst = new BinarySearchTree();
+
+  const valuesToInsert = [5, 5, 2, 4, 7, 5, 6, 20, 2, 17];
+
+  valuesToInsert.forEach((value) => {
+    bst.insert(value);
+  });
+
+  const ascTraversalResult = bst.traverse("asc");
+  console.log("traversal result:", ascTraversalResult);
+
+  const sortedValuesToInsert = customSort(valuesToInsert);
+  console.log("valuesToInsert:", sortedValuesToInsert);
+  console.log(
+    "values === result?",
+    isEqual(valuesToInsert, ascTraversalResult),
+  );
 }
 
 run();
