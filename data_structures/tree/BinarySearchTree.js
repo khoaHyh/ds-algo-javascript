@@ -1,57 +1,78 @@
-import BinaryTreeNode from "./BinaryTreeNode.js";
+class BinaryTreeNode {
+  constructor(value, left = null, right = null) {
+    this.value = value ?? null;
+    this.left = left;
+    this.right = right;
+  }
+}
 
-export default class BinarySearchTree extends BinaryTreeNode {
-  constructor(value) {
-    super(value);
+export default class BinarySearchTree {
+  constructor(value = null) {
+    this.root = value ? new BinaryTreeNode(value) : null;
   }
 
   insert(value) {
-    if (value < this.value) {
-      if (this.left == null) {
-        this.left = new BinarySearchTree(value);
-        console.log("this.left:", this.left);
-        return this.left;
+    const newNode = new BinaryTreeNode(value);
+
+    if (this.root == null) {
+      this.root = new BinaryTreeNode(value);
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  // Recursively inserts a new node by finding an open branch and inserting it there
+  insertNode(currentNode, newNode) {
+    if (newNode.value < currentNode.value) {
+      if (currentNode.left == null) {
+        currentNode.left = newNode;
       } else {
-        const leftChild = this.getLeftChild();
-        return leftChild.insert(value);
+        // traverse to the left node
+        this.insertNode(currentNode.left, newNode);
       }
     } else {
-      if (this.right == null) {
-        this.right = new BinarySearchTree(value);
-        console.log("this.right:", this.right);
-        return this.right;
+      if (currentNode.right == null) {
+        currentNode.right = newNode;
       } else {
-        const rightChild = this.getRightChild();
-        return rightChild.insert(value);
+        // traverse to the right node
+        this.insertNode(currentNode.right, newNode);
       }
     }
   }
 
   get(value) {
-    if (value < this.value) {
-      if (this.left == null) {
+    if (this.root == null) {
+      return null;
+    }
+
+    return (
+      this.findNode(value, this.root) ?? `No nodes found with value '${value}'`
+    );
+  }
+
+  findNode(value, currentNode) {
+    if (value === currentNode.value) {
+      return this.stringifyNode(currentNode);
+    } else if (value < currentNode.value) {
+      if (currentNode.left == null) {
         return null;
       } else {
-        const leftChild = this.getLeftChild();
-        return leftChild.get(value);
+        // traverse to the left node
+        return this.findNode(value, currentNode.left);
       }
-    } else if (value === this.value) {
-      return this.value;
     } else {
-      if (this.right == null) {
+      if (currentNode.right == null) {
         return null;
       } else {
-        const rightChild = this.getRightChild();
-        return rightChild.get(value);
+        // traverse to the right node
+        return this.findNode(value, currentNode.right);
       }
     }
   }
 
-  getLeftChild() {
-    return this.left;
+  stringifyNode(node) {
+    return JSON.stringify(node, null, 2);
   }
 
-  getRightChild() {
-    return this.right;
-  }
+  traverseAscOrder() {}
 }
